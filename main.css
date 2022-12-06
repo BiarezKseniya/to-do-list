@@ -40,7 +40,8 @@ header h1 {
     display: flex;
 }
 
-input, button {
+input,
+button {
     appearance: none;
     border: none;
     outline: none;
@@ -128,6 +129,7 @@ main {
 #tasks .task .actions {
     display: flex;
     margin: 0 -0.5rem;
+    align-items: center;
 }
 
 .task .actions button {
@@ -157,4 +159,25 @@ main {
 
 .task .actions .delete {
     color: crimson;
+}
+
+
+.timer-launch {
+    background-image: linear-gradient(to right, var(--pink), var(--puprle));
+    -webkit-mask: url(play.svg) no-repeat center;
+    mask: url(play.svg) no-repeat center;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.timer-launch-pause {
+    background-image: linear-gradient(to right, var(--pink), var(--puprle));
+    -webkit-mask: url(pause.svg) no-repeat center;
+    mask: url(pause.svg) no-repeat center;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.timer-text {
+    vertical-align: middle;
 }
