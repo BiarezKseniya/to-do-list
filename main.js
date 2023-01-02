@@ -2,15 +2,19 @@ let aTasks = [
     // {
     //     text: "test1",
     //     timeSec: 0,
-    //     timerStat: true
+    //     timerStat: true,
+    //     timerDiv: null
     // },
     // {
     //     text: "test2",
     //     timeSec: 0,
-    //     timerStat: false
+    //     timerStat: false,
+    //     timerDiv: null
     // },
 
 ];
+
+let oldIndexOfElement; 
 
 const startTimer = () => {
     setInterval(() => {
@@ -60,6 +64,7 @@ const render = () => {
 const addTaskToView = (oTask, list) => {
     const taskEl = document.createElement("div");
     taskEl.classList.add("task");
+    taskEl.setAttribute("draggable", "true");
     const taskContentEl = document.createElement("div");
     taskContentEl.classList.add("content");
     taskEl.appendChild(taskContentEl);
@@ -118,6 +123,12 @@ const addTaskToView = (oTask, list) => {
         oTask.timerStat = !oTask.timerStat;
         formatPlayBut(oTask.timerStat, timerBut);
     })
+
+
+      taskEl.addEventListener('dragstart', handleDragStart);
+      taskEl.addEventListener('dragover', handleDragOver);
+      taskEl.addEventListener('dragend', handleDragEnd);
+      taskEl.addEventListener('drop', handleDrop);
 }
 
 window.addEventListener('load', () => {
@@ -146,6 +157,51 @@ window.addEventListener('load', () => {
 
     })
 })
+
+function handleDragStart (e) {
+    e.target.classList.add('drag');
+    oldIndexOfElement = getPosition(e);
+  }
+
+function handleDragEnd (e) {
+    const newIndexOfElement = getPosition(e);
+    const change = aTasks[oldIndexOfElement]; 
+
+    e.target.classList.remove('drag');
+
+    if (oldIndexOfElement < newIndexOfElement) {
+        for (let i = oldIndexOfElement + 1; i < newIndexOfElement + 1; i++) {
+            aTasks[i - 1] = aTasks[i];
+        }
+    } else {
+        for (let i = oldIndexOfElement; i > newIndexOfElement; i--) {
+            aTasks[i] = aTasks[i - 1];
+        }
+    }
+    aTasks[newIndexOfElement] = change;
+  }
+
+function handleDrop (e) {
+   e.stopPropagation(); // препятствует перенаправлению в браузере.
+  }
+
+  function handleDragOver(e) {
+    const taskList = document.getElementById('tasks');
+    const activeElement = document.querySelector('.drag');
+    e.preventDefault();
+    const currentElement = this;
+    const nextElement = (currentElement == activeElement.nextElementSibling) ?
+    currentElement.nextElementSibling :
+    currentElement;
+    taskList.insertBefore(activeElement, nextElement);
+  }
+
+  function getPosition(e) {
+    const taskList = document.getElementById('tasks');
+    //const tasks = Array.prototype.slice.call(taskList.children);
+    const tasks = Array.from(taskList.children)
+    return tasks.indexOf(e.target);
+  }
 
 const formatTime = (timeSec) => {
     const sec = Math.trunc(timeSec % 60);
